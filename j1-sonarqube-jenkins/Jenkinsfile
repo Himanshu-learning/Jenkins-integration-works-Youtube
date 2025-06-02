@@ -1,0 +1,33 @@
+pipeline {
+   agent any 
+   
+   tools {
+      maven 'maven-tool'
+   }
+   
+   stages {
+      stage('Git-checkout') {
+	    steps {
+	           git branch: 'main', url: 'https://github.com/Himanshu-learning/Jenkins-integration-works-Youtube.git'
+		}
+	  }
+	  stage('Build') {
+	    steps {
+	           maven 'mvn clean package'
+		} 
+	  }
+	  stage('Sonarqube-Analysis') {
+	      steps {
+		      withSonarQubeEnv('sonar-jenkins') {
+				sh 'mvn sonar:sonar'
+			  }
+		  }
+	  
+	  }
+   }
+   post {
+      always {
+	     deleteDir()
+	  }
+   }
+}
