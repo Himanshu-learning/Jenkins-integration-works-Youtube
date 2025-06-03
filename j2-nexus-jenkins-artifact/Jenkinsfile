@@ -6,9 +6,7 @@ pipeline {
     stages {   
         stage ('Git-Checkout') {
             steps {
-                git branch: 'main',
-                credentialsId: '',
-                url: 'https://github.com/Himanshu-learning/Jenkins-integration-works-Youtube.git'
+                git branch: 'main', url: 'https://github.com/Himanshu-learning/Jenkins-integration-works-Youtube.git'
             }
         }
         
