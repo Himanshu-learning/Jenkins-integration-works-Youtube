@@ -13,21 +13,24 @@ pipeline {
 	  }
 	  stage('Build') {
 	    steps {
-	           maven 'mvn clean package'
-		} 
+                  dir('j1-sonarqube-jenkins') {
+                                              sh 'mvn clean package'
+                                              }
+		  } 
 	  }
 	  stage('Sonarqube-Analysis') {
 	      steps {
-		      withSonarQubeEnv('sonar-jenkins') {
-				sh 'mvn sonar:sonar'
-			  }
-		  }
-	  
-	  }
-   }
-   post {
-      always {
-	     deleteDir()
-	  }
-   }
+		     dir('j1-sonarqube-jenkins') { 
+		                                 withSonarQubeEnv('sonar-server') {
+				                                                   sh 'mvn sonar:sonar'
+			                                                          }
+		                                 } 
+	            }
+        }
+    }
+    post {
+          always {
+	         deleteDir()
+	         }
+         }
 }
