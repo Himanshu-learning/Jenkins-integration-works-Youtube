@@ -25,30 +25,6 @@ pipeline {
             }
         }
         
-        
-        stage ('Nexus-repo') {
-            steps {
-                  dir('j2-nexus-jenkins-artifact') {
-                                           script { 
-                                                def mavenPom = readMavenPom file: 'pom.xml'
-                                                def nexusRepoName = mavenPom.version.endsWith("SNAPSHOT") ? "nexus-arti-snapshot" : "nexus-arti-release"
-                                                nexusArtifactUploader artifacts: [
-                                                [artifactId: "${mavenPom.artifactId}", 
-                                                classifier: '', 
-                                                file: "target/${mavenPom.artifactId}-${mavenPom.version}.${mavenPom.version}", 
-                                                type: "${mavenPom.packaging}"
-                                                ]
-                                                  ], 
-                                                  credentialsId: 'nexus-cred', 
-                                                  groupId: "${mavenPom.groupId}" , 
-                                                  nexusUrl: "${env.nexus_ip}", 
-                                                  nexusVersion: 'nexus3', 
-                                                  protocol: 'http', 
-                                                  repository: "${nexusRepoName}" , 
-                                                  version: "${mavenPom.version}"
-                                                 }
-                }
-            }
-        }
+
     }
 }
