@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    tools {
+        maven 'maven-tool'
+    }
+    stages {
+        stage("Git Checkout") {
+            steps {
+                git branch: 'main', url: 'https://github.com/Himanshu-learning/jenkins-tomcat.git'
+            }
+        }
+        stage("Maven Build") {
+            steps {
+                sh "mvn clean package"
+            }
+        }
+        stage("Archive Artifact") {
+            steps {
+                archiveArtifacts 'target/*.war'
+            }
+        }
+        
+        stage ('Deploying Artifact') {
+            steps {
+                script { 
+                    sshagent(['tomcat-server'])
+                    { 
+                        sh "scp -o StrictHostKeyChecking=no $WORKSPACE/*/*.war tomcat@${TOMCAT_IP}:/opt/tomcat/webapps/"
+                    }
+                }
+            }
+        }
+    }
+}
